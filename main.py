@@ -2,7 +2,7 @@ import argparse
 import configparser
 from functools import partial
 from multiprocessing import Pool
-
+import os
 import psutil
 
 from crawler.crawl_authors import crawl as authors_crawler
@@ -36,6 +36,15 @@ def main():
     args = vars(parse_args())
     print(args)
     path = config["storage"]["path"]
+    CHECK_FOLDER = os.path.isdir(path)
+
+    # If folder doesn't exist, then create it.
+    if not CHECK_FOLDER:
+        os.makedirs(path)
+        print("created folder : ", path)
+    else:
+        print(path, "Folder exists proceeding as is...")
+
     num_cpus = psutil.cpu_count(logical=False)
     if len(args["funder"]) > 0:
         print("Crawling publications for the given funding reference numbers")

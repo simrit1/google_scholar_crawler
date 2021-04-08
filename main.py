@@ -39,7 +39,6 @@ def main():
     num_cpus = psutil.cpu_count(logical=False)
     if len(args["funder"]) > 0:
         print("Crawling publications for the given funding reference numbers")
-        #pubs_crawler(path, args["funder"][0])
         with Pool(num_cpus) as p:
             func = partial(pubs_crawler, path)
             p.map(func, args["funder"])

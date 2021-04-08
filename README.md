@@ -56,7 +56,7 @@
         or 
         docker run -ti -e type="--authors db" crawler 
         or
-        docker run -ti -e type="--funders keyword1 keyword2" crawler 
+        docker run -ti -e type="--funder keyword1 keyword2" crawler 
         ```
     
    

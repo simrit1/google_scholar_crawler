@@ -6,6 +6,7 @@ import os
 import psutil
 
 from crawler.crawl_authors import crawl as authors_crawler
+from crawler.crawl_authors import crawl_author_info as author_info_crawler
 from crawler.crawl_pubs import crawl as pubs_crawler
 from crawler.utils import read_table
 
@@ -22,6 +23,11 @@ def parse_args():
     )
     parser.add_argument(
         '--authors',
+        nargs="*",
+        default=[],
+        help='Entity type to download')
+    parser.add_argument(
+        '--authorsinfo',
         nargs="*",
         default=[],
         help='Entity type to download')
@@ -51,22 +57,29 @@ def main():
         with Pool(num_cpus) as p:
             func = partial(pubs_crawler, path)
             p.map(func, args["funder"])
-
-    elif "db" in args["authors"]:
-        print("Crawling publications for the ELLIS Fellows")
-        #authors_crawler(path, authors_list)
-        authors_list = read_table(config["mongo"]["uri"])
-        with Pool(num_cpus) as p:
-            func = partial(authors_crawler, path)
-            p.map(func, authors_list)
-
-    elif "file" in args["authors"]:
-        with open("authors.txt") as f:
-            authors_list = f.read().splitlines()
-        print("Crawling publications for the given list Authors")
-        with Pool(num_cpus) as p:
-            func = partial(authors_crawler, path)
-            p.map(func, authors_list)
+    elif len(args["authors"]) > 0:
+        if "db" in args["authors"]:
+            print("Crawling publications for the ELLIS Fellows")
+            # authors_crawler(path, authors_list)
+            authors_list = read_table(config["mongo"]["uri"])
+            with Pool(num_cpus) as p:
+                func = partial(authors_crawler, path)
+                p.map(func, authors_list)
+        elif "file" in args["authors"]:
+            with open("authors.txt") as f:
+                authors_list = f.read().splitlines()
+            print("Crawling publications for the given list Authors")
+            with Pool(num_cpus) as p:
+                func = partial(authors_crawler, path)
+                p.map(func, authors_list)
+    elif len(args["authorsinfo"]) > 0:
+        if "file" in args["authorsinfo"]:
+            with open("authors.txt") as f:
+                authors_list = f.read().splitlines()
+            print("Crawling author information for the given list Authors")
+            with Pool(num_cpus) as p:
+                func = partial(author_info_crawler, path)
+                p.map(func, authors_list)
     else:
         print("Please pass funding reference numbers or authors list to crawl")
 

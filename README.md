@@ -44,15 +44,21 @@
         
     5.1 Running locally
 
-        
+        Fetching authors publications:  
         ```
             python main.py --authors file
+        ```
+
+        Fetching authors information:  
+        ```
+            python main.py --authorsinfo file
         ```
     5.2 Running using Docker
     
         ```
         docker build -t crawler .
-        docker run -ti -e type="--authors file" crawler 
+        docker run -ti -e type="--authors file" crawler
+        docker run -ti -e type="--authorsinfo file" crawler 
         or 
         docker run -ti -e type="--authors db" crawler 
         or

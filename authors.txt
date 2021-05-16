@@ -1,1 +1,158 @@
+Bernhard Schölkopf
+Klaus-Robert Müller
+Daniel Cremers
+Thomas Wiegand
+Nassir Navab
+Martin Vingron
+Fabian J. Theis
+Andreas Geiger
+Peter F. Stadler
+Michael J. Black
 Matthias Bethge
+Oliver Kohlbacher
+Jens Lehmann
+Frank Noé
+Frederick Klauschen
+Hinrich Schütze
+Andreas Dengel
+Erhard Rahm
+Anja Feldmann
+Matthias Hein
+Volker Tresp
+Rolf Drechsler
+Anne-Laure Boulesteix
+Ulrike von Luxburg
+Paul Lukowicz
+Wojciech Samek
+Thomas Seidl
+Volker Markl
+Peer Kröger
+Zeynep Akata
+Konrad Rieck
+Philipp Berens
+Christof Schütte
+Grégoire Montavon
+Sebastian Möller
+Giuseppe Caire
+Volker Schmidt
+Antonio Krüger
+Philipp Slusallek
+Uwe Ohler
+Jörg Stückler
+Sebastian Hellmann
+Christian Bohm
+Elisabeth André
+Didier Stricker
+Martin Potthast
+Stephan Günnemann
+Hans D. Schotten
+Wolfgang Lehner
+Markus Krötzsch
+Martin Bogdan
+Jakob H. Macke
+Raimund Dachselt
+Hendrik P. A. Lensch
+Joachim Hertzberg
+Peter Loos
+Philipp Hennig
+Heinz Handels
+Stefan Wrobel
+Gerhard Brewka
+Gerik Scheuermann
+Jean-Pierre Seifert
+Norbert Siegmund
+Manfred Opper
+Nico Pfeifer
+Bernd Bischl
+Manfred Broy
+Peter Fettke
+Wieland Brendel
+Wolfgang E. Nagel
+Odej Kao
+Matthias Nießner
+Matthias Klusch
+Slawomir Stanczak
+Moritz Grosse-Wentrup
+Stefan Gumhold
+Alfred Mertins
+Ivo F. Sbalzarini
+Roland F. Schwarz
+Fabian Scheipl
+Frank Kirchner
+Georgios Smaragdakis
+Matthias Schubert
+Isabel Valera
+Christian Bauckhage
+Laura Leal-Taixé
+Jorge-Arnulfo Quiané-Ruiz
+Jürgen Renn
+Niels Pinkwart
+Florian Jug
+Christian Müller
+Oliver Thomas
+Thomas Neumuth
+Peter Dayan
+Katharina Morik
+Fabian H. Sinz
+Ralf Möller
+Werner Damm
+Sebastian Trimpe
+Anna Levina
+Geert-Jan M. Kruijff
+Oliver Zielinski
+Göran Kauermann
+Vladimir Spokoiny
+Ziawasch Abedjan
+Georg Martius
+Friedemann Mattern
+Josef van Genabith
+Sebastian Houben
+Ringo Baumann
+Alexander Reinefeld
+Aljoscha Burchardt
+Daniel Sonntag
+Tilmann Rabl
+Feiyu Xu
+Gerhard Heyer
+Tim Conrad
+Nico Piatkowski
+Jan Alexandersson
+Michael ten Hompel
+Anja Hennemuth
+Patrick Gebhard
+Georg Rehm
+Pascal Welke
+Bernd Neumann
+Horst Bunke
+Norbert Reithinger
+Carsten Ullrich
+Serge Autexier
+Christoph Zechner
+Günter Neumann
+Thomas Rist
+Begum Demir
+Charley M. Wu
+Bogdan Franczyk
+Oliver Urbann
+Manfred Hauswirth
+Alexander Kröner
+Gesche Joost
+Jana Koehler
+Katherine J. Kuchenbecker
+Robert Bamler
+Dieter Hutter
+Mathias Bauer
+Matteo Valleriani
+Falk Lieder
+Theresa Veer
+Helena Kotthaus
+Martin Ruskowski
+Alan Bundy
+Wolfgang Maaß
+Stephan Busemann
+Titus Kühne
+Markus Gross
+Stefan Michaelis
+Klaus Netter
+Anne Lauber-Rönsberg
+Samira Samadi

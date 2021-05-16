@@ -4,7 +4,7 @@ from scholarly import scholarly, ProxyGenerator
 
 from crawler.utils import save_unsuccessful_author
 from crawler.logger import get_logger
-
+import time
 logger = get_logger(__name__)
 
 
@@ -73,14 +73,14 @@ def crawl_author_info(path, author):
     logger.info("Crawling information for the author {}".format(author))
     df = pd.DataFrame(
         columns=[
+            "name",
             "author_id",
             "hindex",
             "hindex5y",
             "citedBy",
             "citedBy5y",
             "i10index",
-            "i10index5y",
-            "cite_counts",
+            "i10index5y"
         ]
     )
     pg = ProxyGenerator()
@@ -98,8 +98,8 @@ def crawl_author_info(path, author):
         return
 
     author_info = scholarly.fill(author_obj, sections=["basics", "indices", "counts"])
-    print(author_info)
     author_dict = {
+        "name": author_info["name"],
         "author_id": author_info["scholar_id"],
         "hindex": author_info["hindex"],
         "hindex5y": author_info["hindex5y"],
@@ -107,7 +107,10 @@ def crawl_author_info(path, author):
         "citedBy5y": author_info["citedby5y"],
         "i10index": author_info["i10index"],
         "i10index5y": author_info["i10index5y"],
-        "cite_counts": author_info["cites_per_year"]
+        "yearly_cites": author_info["cites_per_year"]
+        if author_info["cites_per_year"]
+        else
+        None
     }
     df = df.append(author_dict, ignore_index=True)
     file_name = f"{author_info['name'].lower().replace(' ', '_')}.csv"

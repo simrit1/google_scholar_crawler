@@ -5,6 +5,7 @@ from scholarly import scholarly, ProxyGenerator
 from crawler.utils import save_unsuccessful_author
 from crawler.logger import get_logger
 import time
+
 logger = get_logger(__name__)
 
 
@@ -25,8 +26,7 @@ def crawl(path, author):
     # scholarly.use_proxy(pg)
     pg = ProxyGenerator()
     pg.Tor_External(
-        tor_sock_port=9050, tor_control_port=9051,
-        tor_password="scholarly_password"
+        tor_sock_port=9050, tor_control_port=9051, tor_password="scholarly_password"
     )
     scholarly.use_proxy(pg)
     try:
@@ -80,7 +80,7 @@ def crawl_author_info(path, author):
             "citedBy",
             "citedBy5y",
             "i10index",
-            "i10index5y"
+            "i10index5y",
         ]
     )
     pg = ProxyGenerator()
@@ -90,6 +90,7 @@ def crawl_author_info(path, author):
     scholarly.use_proxy(pg)
     try:
         author_obj = next(scholarly.search_author(author))
+        print(author_obj)
     except StopIteration:
         logger.exception(
             f"Author {author} does not match with any names in Google scholar"
@@ -101,6 +102,8 @@ def crawl_author_info(path, author):
     author_dict = {
         "name": author_info["name"],
         "author_id": author_info["scholar_id"],
+        "affiliation": author_info["affiliation"],
+        "email_domain": author_info["email_domain"],
         "hindex": author_info["hindex"],
         "hindex5y": author_info["hindex5y"],
         "citedBy": author_info["citedby"],
@@ -109,11 +112,56 @@ def crawl_author_info(path, author):
         "i10index5y": author_info["i10index5y"],
         "yearly_cites": author_info["cites_per_year"]
         if author_info["cites_per_year"]
-        else
-        None
+        else None,
     }
     df = df.append(author_dict, ignore_index=True)
     file_name = f"{author_info['name'].lower().replace(' ', '_')}.csv"
     file_path = os.path.join(path, file_name)
     df.to_csv(file_path, sep=";")
     logger.info("Finished crawling author {}".format(author))
+
+
+def crawl_keywords(path, n_hits, keyword):
+    logger.info("Crawling information for the author frrom keywords {} and nHits {}".format(keyword, n_hits))
+    ref_key = keyword.replace(" ", "_")
+    df = pd.DataFrame(
+        columns=[
+            "affiliation",
+            "citedby",
+            "email_domain",
+            "interests",
+            "name",
+            "scholar_id",
+        ]
+    )
+    pg = ProxyGenerator()
+    pg.Tor_External(
+        tor_sock_port=9050, tor_control_port=9051, tor_password="scholarly_password"
+    )
+    scholarly.use_proxy(pg)
+    try:
+        author_obj = scholarly.search_keyword(keyword)
+        for idx, authors in enumerate(author_obj):
+            if idx > int(n_hits):
+                break
+            author_dict = {
+                "affiliation": authors["affiliation"],
+                "name": authors["name"],
+                "citedby": authors["citedby"],
+                "email_domain": authors["email_domain"],
+                "scholar_id": authors["scholar_id"],
+                "interests": authors["interests"]
+            }
+            df = df.append(author_dict, ignore_index=True)
+
+    except StopIteration:
+        logger.exception(
+            f"The {keyword} does not match with any results in Google scholar"
+        )
+        save_unsuccessful_author(path, ref_key)
+        return
+
+    file_name = ref_key + ".csv"
+    file_path = os.path.join(path, file_name)
+    df.to_csv(file_path, sep=";")
+    logger.info("Finished crawling information of authors for {}".format(ref_key))

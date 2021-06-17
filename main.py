@@ -7,6 +7,7 @@ import psutil
 
 from crawler.crawl_authors import crawl as authors_crawler
 from crawler.crawl_authors import crawl_author_info as author_info_crawler
+from crawler.crawl_authors import crawl_keywords as author_info_keywords
 from crawler.crawl_pubs import crawl as pubs_crawler
 from crawler.utils import read_table
 
@@ -31,6 +32,11 @@ def parse_args():
         nargs="*",
         default=[],
         help='Entity type to download')
+    parser.add_argument(
+        '--keyword',
+        nargs="*",
+        default=[],
+        help='Entity type to download')
     args = parser.parse_args()
     return args
 
@@ -42,6 +48,7 @@ def main():
     args = vars(parse_args())
     print(args)
     path = config["storage"]["path"]
+    n_hits = config["nauthors"]["n_hits"]
     CHECK_FOLDER = os.path.isdir(path)
 
     # If folder doesn't exist, then create it.
@@ -80,9 +87,16 @@ def main():
             with Pool(num_cpus) as p:
                 func = partial(author_info_crawler, path)
                 p.map(func, authors_list)
+    elif len(args["keyword"]) > 0:
+        if "file" in args["keyword"]:
+            with open("keywords.txt") as f:
+                keyword_list = f.read().splitlines()
+            print("Crawling author information for the given list of Keywords")
+            with Pool(num_cpus) as p:
+                func = partial(author_info_keywords, path, n_hits)
+                p.map(func, keyword_list)
     else:
-        print("Please pass funding reference numbers or authors list to crawl")
-
+        print("Please pass funding reference numbers or authors list or keywords to crawl information")
 
 if __name__ == "__main__":
     main()

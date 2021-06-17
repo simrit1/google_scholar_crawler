@@ -5,6 +5,7 @@ from scholarly import scholarly, ProxyGenerator
 from crawler.utils import save_unsuccessful_author
 from crawler.logger import get_logger
 import time
+from fp.fp import FreeProxy
 
 logger = get_logger(__name__)
 
@@ -122,7 +123,11 @@ def crawl_author_info(path, author):
 
 
 def crawl_keywords(path, n_hits, keyword):
-    logger.info("Crawling information for the author frrom keywords {} and nHits {}".format(keyword, n_hits))
+    logger.info(
+        "Crawling information for the author frrom keywords {} and nHits {}".format(
+            keyword, n_hits
+        )
+    )
     ref_key = keyword.replace(" ", "_")
     df = pd.DataFrame(
         columns=[
@@ -134,26 +139,42 @@ def crawl_keywords(path, n_hits, keyword):
             "scholar_id",
         ]
     )
+    # Tor dies with MaxTries then use the below idea, but nothing is guarantee
     pg = ProxyGenerator()
     pg.Tor_External(
         tor_sock_port=9050, tor_control_port=9051, tor_password="scholarly_password"
     )
     scholarly.use_proxy(pg)
+    # pg = ProxyGenerator()
+    # proxy = FreeProxy(rand=True, timeout=1, country_id=['BR']).get()
+    # pg.SingleProxy(http=proxy, https=proxy)
+    # scholarly.use_proxy(pg)
     try:
+        next(scholarly.search_keyword(keyword))
         author_obj = scholarly.search_keyword(keyword)
         for idx, authors in enumerate(author_obj):
+            name = authors["name"]
+            logger.info(f"Parsing information for the author {name}")
             if idx > int(n_hits):
                 break
             author_dict = {
                 "affiliation": authors["affiliation"],
                 "name": authors["name"],
-                "citedby": authors["citedby"],
+                "citedby": authors["citedby"] if "citedby" in authors else None,
                 "email_domain": authors["email_domain"],
                 "scholar_id": authors["scholar_id"],
-                "interests": authors["interests"]
+                "interests": authors["interests"],
             }
             df = df.append(author_dict, ignore_index=True)
+        logger.info(f"Length of the authors -- {len(df)}")
+        assert len(df) > 1
 
+    except AssertionError:
+        logger.exception(
+            f"The {keyword} does not match with any results in Google scholar"
+        )
+        save_unsuccessful_author(path, ref_key)
+        return
     except StopIteration:
         logger.exception(
             f"The {keyword} does not match with any results in Google scholar"

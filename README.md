@@ -53,6 +53,12 @@
         ```
             python main.py --authorsinfo file
         ```
+        Fetching information about authors via keyword:  
+        ```
+            # Setup the n_hits in config.ini to your suitable value. (Default is 20)
+            # Example keyword: machine_learning berlin
+            python main.py --keyword file
+        ```
     5.2 Running using Docker
     
         ```

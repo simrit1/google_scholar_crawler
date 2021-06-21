@@ -77,6 +77,11 @@ instance/
 docs/_build/
 doc/_build/
 
+# CSV
+*.csv
+/data
+/data2
+
 # PyBuilder
 target/
 

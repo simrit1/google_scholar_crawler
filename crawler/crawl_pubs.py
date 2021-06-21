@@ -1,5 +1,5 @@
 import os
-from fp.fp import FreeProxy
+
 import pandas as pd
 from scholarly import scholarly, ProxyGenerator
 
@@ -7,18 +7,23 @@ from crawler.logger import get_logger
 
 logger = get_logger(__name__)
 
+# Use this setting for tor_external.
+# pg = ProxyGenerator()
+# pg.Tor_Internal(tor_cmd="tor")
+# Use it for FreeProxy.
+# pg = ProxyGenerator()
+# proxy = FreeProxy(rand=True, timeout=2, country_id=['DE', 'BE', 'BG']).get()
+# pg.SingleProxy(http=proxy, https=proxy)
+# scholarly.use_proxy(pg)
 
-def crawl(path, funding_num):
+# Use this setting for tor_internal
+pg = ProxyGenerator()
+pg.Tor_External(tor_sock_port=9050, tor_control_port=9051, tor_password="scholarly_password")
+scholarly.use_proxy(pg)
+
+
+def crawl_publications(path, funding_num):
     logger.info(f"crawling funding number {funding_num}")
-    pg = ProxyGenerator()
-    #pg.Tor_Internal(tor_cmd="tor")
-    pg.Tor_External(tor_sock_port=9050, tor_control_port=9051, tor_password="scholarly_password")
-    scholarly.use_proxy(pg)
-    #pg = ProxyGenerator()
-    #proxy = FreeProxy(rand=True, timeout=2, country_id=['DE', 'BE', 'BG']).get()
-    #pg.SingleProxy(http=proxy, https=proxy)
-    #scholarly.use_proxy(pg)
-
     publications = scholarly.search_pubs(funding_num)
     df = pd.DataFrame(columns=['title', 'year', 'citations', 'authors', 'venue', 'link'])
     for index, publication in enumerate(publications):

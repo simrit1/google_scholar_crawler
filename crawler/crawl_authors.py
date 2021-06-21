@@ -10,7 +10,9 @@ logger = get_logger(__name__)
 
 pg = ProxyGenerator()
 pg.Tor_External(
-    tor_sock_port=9050, tor_control_port=9051, tor_password="scholarly_password"
+    tor_sock_port=9050,
+    tor_control_port=9051,
+    tor_password="scholarly_password"
 )
 scholarly.use_proxy(pg)
 
@@ -27,7 +29,8 @@ _AUTHOR_COLUMNS = [
             "interests"
         ]
 
-def _get_autohor_dict(author_info):
+
+def _get_author_dict(author_info):
     return {
         "name": author_info["name"],
         "author_id": author_info["scholar_id"],
@@ -103,7 +106,6 @@ def crawl_author_info_by_name(path, author):
     df = pd.DataFrame(columns=_AUTHOR_COLUMNS)
     try:
         author_obj = next(scholarly.search_author(author))
-        print(author_obj)
     except StopIteration:
         logger.exception(
             f"Author {author} does not match with any names in Google scholar"
@@ -112,7 +114,7 @@ def crawl_author_info_by_name(path, author):
         return
 
     author_info = scholarly.fill(author_obj, sections=["basics", "indices", "counts"])
-    author_dict = _get_autohor_dict(author_info)
+    author_dict = _get_author_dict(author_info)
     df = df.append(author_dict, ignore_index=True)
     file_name = f"{author_info['name'].lower().replace(' ', '_')}.csv"
     file_path = os.path.join(path, file_name)
@@ -122,7 +124,7 @@ def crawl_author_info_by_name(path, author):
 
 def crawl_keywords(path, n_hits, keyword):
     logger.info(
-        "Crawling information for the author frrom keywords {} and nHits {}".format(
+        "Crawling information for the author from keywords {} and nHits {}".format(
             keyword, n_hits
         )
     )
@@ -137,16 +139,6 @@ def crawl_keywords(path, n_hits, keyword):
             "scholar_id",
         ]
     )
-    # Tor dies with MaxTries then use the below idea, but nothing is guarantee
-    pg = ProxyGenerator()
-    pg.Tor_External(
-        tor_sock_port=9050, tor_control_port=9051, tor_password="scholarly_password"
-    )
-    scholarly.use_proxy(pg)
-    # pg = ProxyGenerator()
-    # proxy = FreeProxy(rand=True, timeout=1, country_id=['BR']).get()
-    # pg.SingleProxy(http=proxy, https=proxy)
-    # scholarly.use_proxy(pg)
     try:
         next(scholarly.search_keyword(keyword))
         author_obj = scholarly.search_keyword(keyword)
@@ -185,6 +177,7 @@ def crawl_keywords(path, n_hits, keyword):
     df.to_csv(file_path, sep=";")
     logger.info("Finished crawling information of authors for {}".format(ref_key))
 
+
 def crawl_author_info_by_id(path, author_id):
     logger.info("Crawling information for the author {}".format(author_id))
     df = pd.DataFrame(columns=_AUTHOR_COLUMNS)
@@ -198,7 +191,7 @@ def crawl_author_info_by_id(path, author_id):
         return
 
     author_info = scholarly.fill(author_obj, sections=["basics", "indices", "counts"])
-    author_dict = _get_autohor_dict(author_info)
+    author_dict = _get_author_dict(author_info)
     df = df.append(author_dict, ignore_index=True)
     file_name = f"{author_info['name'].lower().replace(' ', '_')}.csv"
     file_path = os.path.join(path, file_name)

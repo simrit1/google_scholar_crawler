@@ -1,10 +1,11 @@
 import os
+
 import pandas as pd
 from scholarly import scholarly, ProxyGenerator
 
-from crawler.utils import save_unsuccessful_author
 from crawler.logger import get_logger
-import time
+from crawler.utils import save_unsuccessful_author
+
 logger = get_logger(__name__)
 
 pg = ProxyGenerator()
@@ -21,7 +22,9 @@ _AUTHOR_COLUMNS = [
             "citedBy",
             "citedBy5y",
             "i10index",
-            "i10index5y"
+            "i10index5y",
+            "affiliation",
+            "interests"
         ]
 
 def _get_autohor_dict(author_info):
@@ -34,7 +37,9 @@ def _get_autohor_dict(author_info):
         "citedBy5y": author_info["citedby5y"],
         "i10index": author_info["i10index"],
         "i10index5y": author_info["i10index5y"],
-        "yearly_cites": author_info["cites_per_year"]
+        "yearly_cites": author_info["cites_per_year"],
+        "affiliation": author_info["affiliation"] if author_info["affiliation"] else "",
+        "interests": author_info["interests"] if author_info["interests"] else []
         if author_info["cites_per_year"]
         else
         None
@@ -89,7 +94,7 @@ def crawl_author_with_publications(path, author):
         df = df.append(pub_dict, ignore_index=True)
     file_name = f"{author_obj['name'].lower().replace(' ', '_')}.csv"
     file_path = os.path.join(path, file_name)
-    df.to_csv(file_path, sep=";")
+    df.to_csv(file_path, sep=",")
     logger.info(f"Finished crawling author {author}")
 
 

@@ -38,7 +38,14 @@
     Tool supports crawling authors and publications, you can crawl authors in two ways using names and google scholar id's. Publications can be crawled using keywords, we mainly support funding reference numbers search and other option using author names.
     If you want to crawl authors or publications from file, first add all the author names to the file and then run the tool by passing the file name to the argument `input-file``.
         
-        
+### Fetching publications using funding reference numbers
+
+   ```
+        python main.py --funders fundingnumber1 fundingnumber2
+   ```
+
+
+
 ### Fetching authors publications:  
     
    ```

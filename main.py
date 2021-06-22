@@ -8,6 +8,7 @@ import psutil
 
 from crawler.crawl_authors import crawl_author_with_publications, crawl_author_info_by_name, crawl_author_info_by_id
 from crawler.crawl_pubs import crawl_publications
+from crawler.merge_data import merge_authors
 
 
 def parse_args():
@@ -40,11 +41,7 @@ def parse_args():
     return args
 
 
-def main():
-    config = configparser.ConfigParser()
-    config.read('config.ini')
-
-    args = vars(parse_args())
+def main(config, args):
     print(args)
     path = config["storage"]["path"]
     is_directory_exists = os.path.isdir(path)
@@ -96,4 +93,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    args = vars(parse_args())
+    main(config, args)
+    merge_authors(config)
+

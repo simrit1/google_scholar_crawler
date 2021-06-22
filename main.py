@@ -47,14 +47,14 @@ def main():
     args = vars(parse_args())
     print(args)
     path = config["storage"]["path"]
-    CHECK_FOLDER = os.path.isdir(path)
+    is_directory_exists = os.path.isdir(path)
 
     # If folder doesn't exist, then create it.
-    if not CHECK_FOLDER:
+    if not is_directory_exists:
         os.makedirs(path)
-        print("created folder : ", path)
+        print(f"created directory : {path}")
     else:
-        print(path, "Folder exists proceeding as is...")
+        print(f"Directory {path} exists proceeding as is...")
     num_cpus = psutil.cpu_count(logical=False)
     if len(args["funder"]) > 0:
         print("Crawling publications for the given funding reference numbers")
@@ -66,6 +66,7 @@ def main():
         input_file = args["input_file"]
         with open(input_file) as f:
             authors_list = f.read().splitlines()
+        assert len(authors_list) > 0, "No Authors in the given input file, please add author names before running"
         print("Crawling publications for the given list Authors")
         with Pool(num_cpus) as p:
             func = partial(crawl_author_with_publications, path)
@@ -75,6 +76,7 @@ def main():
         input_file = args["input_file"]
         with open(input_file) as f:
             authors_list = f.read().splitlines()
+        assert len(authors_list) > 0, "No Authors in the given input file, please add author names before running"
         print("Crawling author information for the given list Author names")
         with Pool(num_cpus) as p:
             func = partial(crawl_author_info_by_name, path)
@@ -84,6 +86,7 @@ def main():
         input_file = args["input_file"]
         with open(input_file) as f:
             authors_list = f.read().splitlines()
+        assert len(authors_list) > 0, "No Google scholar id's in the given input file, please add scholar id's before running"
         print("Crawling author information for the given list Authors")
         with Pool(num_cpus) as p:
             func = partial(crawl_author_info_by_id, path)

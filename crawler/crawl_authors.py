@@ -10,7 +10,9 @@ logger = get_logger(__name__)
 
 pg = ProxyGenerator()
 pg.Tor_External(
-    tor_sock_port=9050, tor_control_port=9051, tor_password="scholarly_password"
+    tor_sock_port=9050,
+    tor_control_port=9051,
+    tor_password="scholarly_password"
 )
 scholarly.use_proxy(pg)
 
@@ -27,7 +29,8 @@ _AUTHOR_COLUMNS = [
             "interests"
         ]
 
-def _get_autohor_dict(author_info):
+
+def _get_author_dict(author_info):
     return {
         "name": author_info["name"],
         "author_id": author_info["scholar_id"],
@@ -111,12 +114,68 @@ def crawl_author_info_by_name(path, author):
         return
 
     author_info = scholarly.fill(author_obj, sections=["basics", "indices", "counts"])
-    author_dict = _get_autohor_dict(author_info)
+    author_dict = _get_author_dict(author_info)
     df = df.append(author_dict, ignore_index=True)
     file_name = f"{author_info['name'].lower().replace(' ', '_')}.csv"
     file_path = os.path.join(path, file_name)
     df.to_csv(file_path, sep=",")
     logger.info("Finished crawling author {}".format(author))
+
+
+def crawl_keywords(path, n_hits, keyword):
+    logger.info(
+        "Crawling information for the author from keywords {} and nHits {}".format(
+            keyword, n_hits
+        )
+    )
+    ref_key = keyword.replace(" ", "_")
+    df = pd.DataFrame(
+        columns=[
+            "affiliation",
+            "citedby",
+            "email_domain",
+            "interests",
+            "name",
+            "scholar_id",
+        ]
+    )
+    try:
+        next(scholarly.search_keyword(keyword))
+        author_obj = scholarly.search_keyword(keyword)
+        for idx, authors in enumerate(author_obj):
+            name = authors["name"]
+            logger.info(f"Parsing information for the author {name}")
+            if idx > int(n_hits):
+                break
+            author_dict = {
+                "affiliation": authors["affiliation"],
+                "name": authors["name"],
+                "citedby": authors["citedby"] if "citedby" in authors else None,
+                "email_domain": authors["email_domain"],
+                "scholar_id": authors["scholar_id"],
+                "interests": authors["interests"],
+            }
+            df = df.append(author_dict, ignore_index=True)
+        logger.info(f"Length of the authors -- {len(df)}")
+        assert len(df) > 1
+
+    except AssertionError:
+        logger.exception(
+            f"The {keyword} does not match with any results in Google scholar"
+        )
+        save_unsuccessful_author(path, ref_key)
+        return
+    except StopIteration:
+        logger.exception(
+            f"The {keyword} does not match with any results in Google scholar"
+        )
+        save_unsuccessful_author(path, ref_key)
+        return
+
+    file_name = ref_key + ".csv"
+    file_path = os.path.join(path, file_name)
+    df.to_csv(file_path, sep=";")
+    logger.info("Finished crawling information of authors for {}".format(ref_key))
 
 
 def crawl_author_info_by_id(path, author_id):
@@ -132,7 +191,7 @@ def crawl_author_info_by_id(path, author_id):
         return
 
     author_info = scholarly.fill(author_obj, sections=["basics", "indices", "counts"])
-    author_dict = _get_autohor_dict(author_info)
+    author_dict = _get_author_dict(author_info)
     df = df.append(author_dict, ignore_index=True)
     file_name = f"{author_info['name'].lower().replace(' ', '_')}.csv"
     file_path = os.path.join(path, file_name)

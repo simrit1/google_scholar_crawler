@@ -3,10 +3,11 @@ import configparser
 import os
 from functools import partial
 from multiprocessing import Pool
-
 import psutil
-
-from crawler.crawl_authors import crawl_author_with_publications, crawl_author_info_by_name, crawl_author_info_by_id
+from crawler.crawl_authors import (crawl_author_with_publications,
+                                   crawl_author_info_by_name,
+                                   crawl_author_info_by_id,
+                                   crawl_keywords)
 from crawler.crawl_pubs import crawl_publications
 from crawler.merge_data import merge_authors
 
@@ -34,6 +35,10 @@ def parse_args():
         action="store_true",
         help='Entity type to download')
     parser.add_argument(
+        '--authors-by-keyword',
+        nargs="*",
+        help='Entity type to download')
+    parser.add_argument(
         '--input-file',
         type=str,
         help='Path to input file')
@@ -44,6 +49,7 @@ def parse_args():
 def main(config, args):
     print(args)
     path = config["storage"]["path"]
+    n_hits = config["nauthors"]["n_hits"]
     is_directory_exists = os.path.isdir(path)
 
     # If folder doesn't exist, then create it.
@@ -59,7 +65,8 @@ def main(config, args):
             func = partial(crawl_publications, path)
             p.map(func, args["funder"])
     elif "authors_publications" in args:
-        assert (args["input_file"] and os.path.isfile(args["input_file"])), "Please provide the correct input file"
+        assert (args["input_file"] and os.path.isfile(args["input_file"])),\
+            "Please provide the correct input file"
         input_file = args["input_file"]
         with open(input_file) as f:
             authors_list = f.read().splitlines()
@@ -69,7 +76,8 @@ def main(config, args):
             func = partial(crawl_author_with_publications, path)
             p.map(func, authors_list)
     elif "authors_by_name" in args:
-        assert (args["input_file"] and os.path.isfile(args["input_file"])), "Please provide the correct input file"
+        assert (args["input_file"] and os.path.isfile(args["input_file"])),\
+            "Please provide the correct input file"
         input_file = args["input_file"]
         with open(input_file) as f:
             authors_list = f.read().splitlines()
@@ -79,7 +87,8 @@ def main(config, args):
             func = partial(crawl_author_info_by_name, path)
             p.map(func, authors_list)
     elif "authors_by_id" in args:
-        assert (args["input_file"] and os.path.isfile(args["input_file"])), "Please provide the correct input file"
+        assert (args["input_file"] and os.path.isfile(args["input_file"])),\
+            "Please provide the correct input file"
         input_file = args["input_file"]
         with open(input_file) as f:
             authors_list = f.read().splitlines()
@@ -88,8 +97,20 @@ def main(config, args):
         with Pool(num_cpus) as p:
             func = partial(crawl_author_info_by_id, path)
             p.map(func, authors_list)
+    elif "authors_by_keyword" in args:
+        assert (args["input_file"] and os.path.isfile(args["input_file"])),\
+            "Please provide the correct input file"
+        input_file = args["input_file"]
+        with open(input_file) as f:
+            keyword_list = f.read().splitlines()
+        assert len(keyword_list) > 0, "No keywords are provided in the input file, please them before running"
+        print("Crawling author information for the given list of Keywords")
+        with Pool(num_cpus) as p:
+            func = partial(crawl_keywords, path, n_hits)
+            p.map(func, keyword_list)
     else:
-        print("Please pass funding reference numbers or authors list to crawl")
+        print("Please pass funding reference numbers or authors list or\
+            keywords to crawl information")
 
 
 if __name__ == "__main__":

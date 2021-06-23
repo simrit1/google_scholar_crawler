@@ -10,7 +10,7 @@ from crawler.crawl_authors import (crawl_author_with_publications,
                                    crawl_keywords)
 from crawler.crawl_pubs import crawl_publications
 from crawler.merge_data import merge_authors
-
+from visualization import visualize_authors, helpers
 
 def parse_args():
     parser = argparse.ArgumentParser(prog='scholar-crawl',
@@ -119,4 +119,7 @@ if __name__ == "__main__":
     args = vars(parse_args())
     main(config, args)
     merge_authors(config)
-
+    visualize_authors.get_top_citeBy_researchers(config)
+    visualize_authors.get_top_hindex_researchers(config)
+    visualize_authors.get_top_interests(config)
+    helpers.generate_pdf(config)

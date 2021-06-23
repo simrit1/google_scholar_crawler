@@ -1,1 +1,10 @@
-Richard Feynman
+Bernhard Schölkopf
+Wil van der Aalst
+Klaus-Robert Müller
+Bernt Schiele
+Wolfgang Rhode
+Wolfram Burgard
+Hans-Peter Seidel
+Peter F Stadler
+Daniel Rueckert
+Michael J. Black

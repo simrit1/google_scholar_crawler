@@ -1,0 +1,42 @@
+\documentclass[]{article}
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{pgffor} % for loop
+\usepackage{xstring} % for declaring lists
+
+
+
+\graphicspath{{figures/}}
+
+
+\title{Generalisation report}
+
+\author{%
+	report produced from \href{https://github.com/bethgelab/google_scholar_crawler}{google\_scholar\_crawler}\\
+}
+
+
+
+\begin{document}
+
+\newcommand{\figwidth}{0.24\textwidth}
+\newcommand{\captionspace}{-1.5\baselineskip}
+\newcommand{\captionspaceII}{0.6\baselineskip}
+\newcommand{\captionspaceBenchmark}{-0.5\baselineskip}
+
+
+\maketitle
+\input{assets/top-keywords.tex}
+\input{assets/h-index-top.tex}
+\input{assets/citeBy-top.tex}
+%\input{assets/mds.tex}
+\end{document}

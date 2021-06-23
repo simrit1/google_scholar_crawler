@@ -174,7 +174,7 @@ def crawl_keywords(path, n_hits, keyword):
 
     file_name = ref_key + ".csv"
     file_path = os.path.join(path, file_name)
-    df.to_csv(file_path, sep=";")
+    df.to_csv(file_path, sep=",")
     logger.info("Finished crawling information of authors for {}".format(ref_key))
 
 

@@ -44,12 +44,24 @@ Many research insitutes and research driven companies are required to obtain inf
     path=/home/user/your_saveable_folder
    ```
 
+## Setup pdflatex for visualization as a report generation:
+pdflatex tool allow to convert the latex sources into pdf. This is useful to generate a report style visualization as a report to the user.
+
+Installation Steps:
+1. Installation of TexLive base  
+   `sudo apt-get install texlive-latex-base`
+2. Install additional fonts and extras  
+   `sudo apt-get install texlive-fonts-recommended`  
+   `sudo apt-get install texlive-fonts-extra`
+3. Installation of extra packages  
+   `sudo apt-get install texlive-latex-extra`
+4. Installation of pdflatex through pip command:  
+   `pip install pdflatex`  
 ## Run the tool
           
     Tool supports crawling for authors, authors profile, keyword based authors and publications, you can crawl authors in two ways using names and google scholar id's. Publications can be crawled using keywords, we mainly support funding reference numbers search and other option using author names.
 
 ## Examples:
-<TODO: Check if the examples are correct below>
 
 ### Fetching publications using funding reference numbers
 
@@ -94,7 +106,7 @@ Many research insitutes and research driven companies are required to obtain inf
    ```
     
    
-6. Authors crawled data is stored in the configured path, for each author there will be new file stored.
+6. Authors crawled data is stored in the configured path, for each author there will be new file stored and a combined file is written as **combined_authors.csv** for authors extration.
 
 ## Plans for the next releases:
 - [ ] Creation of visualization module
